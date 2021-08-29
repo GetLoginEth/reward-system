@@ -14,6 +14,27 @@ async function isCorrectAddress(address, usernameHash) {
     return data.username === usernameHash && data.isActive;
 }
 
+async function getSentInvites(usernameHash) {
+    const filter = GLStorage.filters.EventInviteCreated(usernameHash);
+
+    return (await GLStorage.queryFilter(filter)).map(item => item.args.inviteAddress);
+}
+
+async function getInviteStatuses(invites) {
+    let result = [];
+    for (let i = 0; i < invites.length; i++) {
+        const address = invites[i];
+        const data = await GLStorage.Invites(address);
+
+        result.push({
+            address,
+            registered: !data.isActive
+        });
+    }
+
+    return result;
+}
+
 const app = express();
 app.use(cors());
 
@@ -35,6 +56,21 @@ app.post('/reward', async (req, res) => {
         // todo reward here!!!
         // const signer = new ethers.Wallet(data.wallet.privateKey).connect(provider);
         // bzzContract = new ethers.Contract(envConfig.bzz.address, tokenData.abi, signer);
+
+        // in case we should reward user depends on invites count
+        // we could use ethers events filter system - https://docs.ethers.io/v5/api/contract/contract/#Contract--filters
+        // example of using
+
+        /*
+        getSentInvites('0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658')
+        .then(data => {
+        console.log('invites', data)
+        getInviteStatuses(data)
+            .then(statuses => {
+                console.log('statuses', statuses);
+            });
+    });
+         */
     }
 
     res.send({
