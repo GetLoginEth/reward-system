@@ -23,10 +23,11 @@ function App() {
         setGLStatus('not_logged');
     };
 
-    const submitRewardRequest = (usernameHash) => {
+    const submitRewardRequest = (address, usernameHash) => {
+        console.log('reward', address, usernameHash)
         fetch(`${API_URL}reward`, {
             method: 'POST',
-            body: JSON.stringify({usernameHash})
+            body: JSON.stringify({address, usernameHash})
         }).then();
     };
 
@@ -82,7 +83,7 @@ function App() {
 
                 <button onClick={() => {
                     if (GLInstance.usernameHash) {
-                        submitRewardRequest(GLInstance.usernameHash);
+                        submitRewardRequest(GLInstance.address, GLInstance.usernameHash);
                         setGLStatus('rewarded');
                     } else {
                         alert('Empty usernameHash');

@@ -4,17 +4,15 @@ const cors = require('cors');
 require('dotenv').config();
 const GLStorageABI = require('./abi/GetLoginStorage.json');
 
+const appId = process.env.GL_APP_ID;
 const provider = new providers.JsonRpcProvider(process.env.PROVIDER_URL);
 let GLStorage = new ethers.Contract(process.env.GL_DATA_CONTRACT, GLStorageABI, provider);
 
-// GLStorage.logicAddress().then(data => {
-//     console.log('logic address', data);
-// });
-// GLStorage.getUser('0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658').then(data => {
-//     console.log('user info', data);
-// });
-// const signer = new ethers.Wallet(data.wallet.privateKey).connect(provider);
-// bzzContract = new ethers.Contract(envConfig.bzz.address, tokenData.abi, signer);
+async function isCorrectAddress(address, usernameHash) {
+    const data = await GLStorage.UsersAddressUsername(address);
+
+    return data.username === usernameHash && data.isActive;
+}
 
 const app = express();
 app.use(cors());
@@ -23,17 +21,25 @@ app.use(express.json());
 app.get('/', async (req, res) => {
     res.send({
         result: 'ok',
-        'hello': 'world'
+        'hello': 'world',
     });
 });
 
 app.post('/reward', async (req, res) => {
-    const {usernameHash} = req.body;
+    const {address, usernameHash} = req.body;
 
-    // todo with getPastEvents get latest wallet for [appId,user] and fund it
+    console.log('reward', appId, address, usernameHash);
+    const result = await isCorrectAddress(address, usernameHash);
 
+    if (result) {
+        // todo reward here!!!
+        // const signer = new ethers.Wallet(data.wallet.privateKey).connect(provider);
+        // bzzContract = new ethers.Contract(envConfig.bzz.address, tokenData.abi, signer);
+    }
 
-    res.send({result: 'ok'});
+    res.send({
+        result
+    });
 });
 
 module.exports = app;
