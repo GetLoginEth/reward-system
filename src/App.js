@@ -40,9 +40,16 @@ function App() {
             }
         }
 
+        async function getBalances(instance) {
+            // getting latest session balances (xdai + xbzz)
+            setInterval(async () => {
+                console.log('balances', await instance.getSessionBalances());
+            }, 5000);
+        }
+
         function injectGetLogin() {
             const script = document.createElement('script');
-            script.src = `${GL_BASE_URL}api/last.js`;
+            script.src = `${GL_BASE_URL}api/last.js?${Math.random()}`;
             script.async = true;
             script.type = 'module';
             script.onload = async () => {
@@ -54,6 +61,7 @@ function App() {
                 console.log('result', result);
                 if (result.data.is_client_allowed) {
                     setGLStatus('logged');
+                    getBalances(instance).then();
                 } else {
                     setGLStatus('not_logged');
                 }
