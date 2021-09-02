@@ -52,24 +52,23 @@ app.post('/reward', async (req, res) => {
     console.log('reward', appId, address, usernameHash);
     const result = await isCorrectAddress(address, usernameHash);
 
+    // const signer = new ethers.Wallet(data.wallet.privateKey).connect(provider);
+    // bzzContract = new ethers.Contract(envConfig.bzz.address, tokenData.abi, signer);
     if (result) {
         // todo reward here!!!
-        // const signer = new ethers.Wallet(data.wallet.privateKey).connect(provider);
-        // bzzContract = new ethers.Contract(envConfig.bzz.address, tokenData.abi, signer);
+
+        // todo address which received this method is the address only for FairDrive (session)
+        // todo if you want to receive user's main address, call `getUser(usernameHash)` method from contract and get `mainAddress` field
 
         // in case we should reward user depends on invites count
         // we could use ethers events filter system - https://docs.ethers.io/v5/api/contract/contract/#Contract--filters
         // example of using
 
         /*
-        getSentInvites('0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658')
-        .then(data => {
+        const data = await getSentInvites(usernameHash);
         console.log('invites', data)
-        getInviteStatuses(data)
-            .then(statuses => {
-                console.log('statuses', statuses);
-            });
-    });
+        const statuses = getInviteStatuses(data);
+        console.log('statuses', statuses);
          */
     }
 
