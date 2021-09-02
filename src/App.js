@@ -47,6 +47,12 @@ function App() {
             }, 5000);
         }
 
+        async function getSessionPrivateKey(instance) {
+            // getting session private key. App could use it for own purposes
+            // for example - send it to FairOS node to withdraw xBzz for stamps
+            console.log('session private key', await instance.getSessionPrivateKey());
+        }
+
         function injectGetLogin() {
             const script = document.createElement('script');
             script.src = `${GL_BASE_URL}api/last.js?${Math.random()}`;
@@ -62,6 +68,7 @@ function App() {
                 if (result.data.is_client_allowed) {
                     setGLStatus('logged');
                     getBalances(instance).then();
+                    getSessionPrivateKey(instance).then();
                 } else {
                     setGLStatus('not_logged');
                 }
